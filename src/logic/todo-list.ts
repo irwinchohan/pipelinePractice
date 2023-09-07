@@ -22,7 +22,7 @@ export class TodoList {
   }
 
   addTask(taskToAdd: Task) {
-    if (taskToAdd.name) {
+    if (!taskToAdd.name) {
       this.tasks.push(taskToAdd)
     }
   }
