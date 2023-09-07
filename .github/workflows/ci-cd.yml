@@ -18,7 +18,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-     steps:
+    steps:
       # This grabs the latest code from the main branch.
       - name: Checkout
         uses: actions/checkout@v3 # uses an action that has already been created
