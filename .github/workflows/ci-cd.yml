@@ -1,0 +1,58 @@
+name: build-and-deploy
+
+on: 
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+     steps:
+      # This grabs the latest code from the main branch.
+      - name: Checkout
+        uses: actions/checkout@v3 # uses an action that has already been created
+
+      # This step sets up Node, including npm.
+      - name: Set up node
+        uses: actions/setup-node@v3 # yet another helpful action that's already been created
+        with:
+          node-version: "20.5.0"
+
+      # ... which then allows us to install the dependencies ... 
+      - run: npm ci 
+
+      # ... run the Jest unit tests ...
+      - run: npm test
+      
+      # ... and build our application! The resulting app is built to the /dist folder.
+      - run: npm run build
+      
+      # This sets up GitHub Pages...
+      - name: Set up Pages
+        uses: actions/configure-pages@v3
+      
+      # ... and then uploads the build artifact (the contents of the /dist folder) to GitHub Pages.
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './dist'
+
+      # Finally, this step deploys our application to the live page!
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+    
+
+    
